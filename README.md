@@ -5,7 +5,18 @@ The 'apparent' R package performs parentage analysis based on a test of genetic 
 For any offspring not successfully assigned to a pair of parents, perhaps due to the absence of one parent from the test population, a non-mandatory Dyad analysis can be employed to identify a likely single parent for a given offspring. In this analysis, a two-stage test is applied to discriminate an offspring's true parent from its other close relatives (e.g. siblings) that may also be present in the population. In the first stage, 'apparent' calculates the mean GD (GDM) between a POk and all expected progeny arising from the j possible triads involving potential parent i. In the second stage, it calculates a coefficient of variation (GDCV) among the pairwise GD's between POk and each expected progeny arising from the j triads involving potential parent i. An individual that is simultaneously a low outlier in the first test and a high outlier in the second is identified as a likely parent of POk. In an effort to facilitate interpretation, results of both the triad and optional dyad analyses are presented in tabular and graphical form.
 
 ### Usage
+- Download the [apparent_TestData.txt](https://github.com/halelab/apparent/blob/master/apparent_TestData.txt) for your R working directory.  
+- Download the [apparent R script](https://github.com/halelab/apparent/blob/master/apparent.R) and load it into R.
 ```
+In R
+# Install/Load the required "outliers" R package
+install.packages("outliers")
+library(outliers)
+# Set the path for your working directory
+setwd("/path/to/work/dir")
+# Load the apparent_TestData
+InputFile <- read.table(file="apparent_TestData.txt",sep="\t",h=F)
+# Run apparent
 apparent (InputFile, MaxIdent = 0.1, alpha = 0.01, nloci = 100, FullList = TRUE, self = TRUE, plot = TRUE, Dyad = FALSE)
 ```
 

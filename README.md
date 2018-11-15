@@ -1,5 +1,4 @@
 # apparent
-A simple and flexible R package for accurate SNP-based parentage analysis in the absence of guiding information.
 
 ### Description
 The 'apparent' R package performs parentage analysis based on a test of genetic identity between expected progeny (EPij), built using homozygous loci from all pairs of possible parents (i and j), and all potential offspring (POk). Using the Gower Dissimilarity metric (GD) (Gower 1971), genetic identity between EPij and POk is taken as evidence that individuals i and j are the true parents of offspring k.  Evaluation of triad (two parents + offspring) significance is based on the distribution of all GD (EPij|k) values. Specifically, a Dixon test (Dixon 1950; 1951) is used to identify a gap-based threshold that separates true triads and from spurious associations.  

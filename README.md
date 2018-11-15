@@ -47,11 +47,13 @@ The keys values allowed in the second column are:
 - **Dyad**: Logical value for instructing 'apparent' to perform a dyad analysis, following the triad analysis. The default value is FALSE.  
 
 ### Outputs
-- **apparent-Triad-All.txt** contains the full table of results from the triad analysis, including the cross type (self or out-cross), the number of usable SNPs, and the GDij|k, of all tested triads.  
-- **apparent-Triad-Sig.txt** reports only those triads found to be significant.  
-- **apparent-Triad-Plot.png** is a plot of the distribution of GDij|k values, annotated with the gap-based threshold that separates true triads from spurious associations.  The plot is useful in interpretating the results of the triad analysis, the full details of which are found in **apparent-Triad-All.txt** and **apparent-Triad-Sig.txt**.  
-- **apparent-Dyad-Sig.txt** reports only those parent-offspring dyads found to be significant.  
-- **apparent-Dyad-Plot.pdf** is a two-paneled figure showing the distributions of GDM and GDCV values upon which the dyad analysis is based. These plots are useful in interpretating the results of the dyad analysis, the full details of which are found in **apparent-Dyad-Sig.txt**.
+The pedigree information for the 12 progenies (four families of three full-sibs each) from controlled crosses used to assess the performance of apparent can be found [here](https://github.com/halelab/apparent/blob/master/Families.xlsx).  
+
+- [**apparent-Triad-All.txt**](https://github.com/halelab/apparent/blob/master/outputs/apparent-Triad-All.txt) contains the full table of results from the triad analysis, including the cross type (self or out-cross), the number of usable SNPs, and the GDij|k, of all tested triads.  
+- [**apparent-Triad-Sig.txt**](https://github.com/halelab/apparent/blob/master/outputs/apparent-Triad-Sig.txt) reports only those triads found to be significant.  
+- [**apparent-Triad-Plot.png**](https://github.com/halelab/apparent/blob/master/outputs/apparent-Triad-Plot.png) is a plot of the distribution of GDij|k values, annotated with the gap-based threshold that separates true triads from spurious associations.  The plot is useful in interpretating the results of the triad analysis, the full details of which are found in **apparent-Triad-All.txt** and **apparent-Triad-Sig.txt**.  
+- [**apparent-Dyad-Sig.txt**](https://github.com/halelab/apparent/blob/master/outputs/apparent-Dyad-Sig.txt) reports only those parent-offspring dyads found to be significant.  
+- [**apparent-Dyad-Plot.pdf**](https://github.com/halelab/apparent/blob/master/outputs/apparent-Dyad-Plot.pdf) is a two-paneled figure showing the distributions of GDM and GDCV values upon which the dyad analysis is based. These plots are useful in interpretating the results of the dyad analysis, the full details of which are found in **apparent-Dyad-Sig.txt**.
 
 ### Reference
 Gower JC. A general coefficient of similarity and some of its properties. Biometrics. 1971;27:857-871.  

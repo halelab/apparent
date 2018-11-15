@@ -44,7 +44,7 @@ The keys values allowed in the second column are:
 - **apparent-Dyad-Plot.pdf** is a two-paneled figure showing the distributions of GDM and GDCV values upon which the dyad analysis is based. These plots are useful in interpretating the results of the dyad analysis, the full details of which are found in **apparent-Dyad-Sig.txt**.
 
 ### Reference
-Gower JC. A general coefficient of similarity and some of its properties. Biometrics. 1971;27:857-871.
-Dixon WJ. Analysis of extreme values. Ann. Math. Stat. 1950;21(4):488-506.
+Gower JC. A general coefficient of similarity and some of its properties. Biometrics. 1971;27:857-871.  
+Dixon WJ. Analysis of extreme values. Ann. Math. Stat. 1950;21(4):488-506.  
 Dixon WJ. Ratios involving extreme values. Ann. Math. Stat. 1951;22(1):68-78.
 

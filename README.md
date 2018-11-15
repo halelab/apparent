@@ -6,7 +6,7 @@ For any offspring not successfully assigned to a pair of parents, perhaps due to
 
 ### Usage
 ```
-apparent (InputFile, MaxIdent = 0.1, alpha = 0.01, nloci = 300, FullList = TRUE, self = TRUE, plot = TRUE, Dyad = FALSE)
+apparent (InputFile, MaxIdent = 0.1, alpha = 0.01, nloci = 100, FullList = TRUE, self = TRUE, plot = TRUE, Dyad = FALSE)
 ```
 
 ### Arguments
@@ -29,7 +29,7 @@ The keys values allowed in the second column are:
 
 - **MaxIdent**: Sets the maximum triad GDij|k to be considered for outlier significance testing. This parameter directly impacts computation time. By default, MaxIdent is set to 0.1.  
 - **alpha**: The alpha level for all significance testing (triad and dyad analyses).  
-- **nloci**: The minimum acceptable number loci to be used when computing the pairwise GDij|k. The default value of 300 is suggested, based on previous investigations. All triads for which the number of usable SNPs falls below nloci will be excluded from the analysis.  
+- **nloci**: The minimum acceptable number loci to be used when computing the pairwise GDij|k. The default value of 100 is suggested, based on previous investigations. All triads for which the number of usable SNPs falls below nloci will be excluded from the analysis.  
 - **FullList**: Logical value for creating an output file containing all pairwise comparisons from the triad analysis. The default value is TRUE.  
 - **self**: Logical value for instructing 'apparent' whether or not to consider self-crossing (parent i = parent j). The default value is TRUE.  
 - **plot**: Logical value for plotting the results of both the triad and dyad analyses. The default value is TRUE.   

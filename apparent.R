@@ -1,4 +1,4 @@
-apparent = function (InputFile, MaxIdent = 0.10, alpha = 0.01, nloci = 300, FullList = TRUE, self = TRUE, plot = TRUE, Dyad = FALSE) {
+apparent = function (InputFile, MaxIdent=0.10, alpha=0.01, nloci=300, self=TRUE, files=FALSE, Dyad=FALSE) {
   
   ### Step 1: Parse the tab-delimited input file and convert genotypic states to numeric genotypic classes, based on primary and secondary 
   ### alleles across the population.
@@ -182,10 +182,47 @@ apparent = function (InputFile, MaxIdent = 0.10, alpha = 0.01, nloci = 300, Full
   # Output1 - All triads
   Out1 <- data.frame(Parent1List,Parent2List,ObsProgList,TypeList,SNPsNumber,GD)
   colnames(Out1) <- c("Parent1","Parent2","Offspring","Cross.Type","SNPs","GD")
-  if (FullList==TRUE) {
-    write.table(Out1,"apparent-Triad-All.txt",sep="\t",col.names=T,row.names=F)
+  if (files==TRUE) {
+    write.csv(Out1,"apparent-Triad-All.csv",row.names=F)
   }
   
+  # Creating the log report file (apparent-Triad-Summary.txt)
+  OMeanGD <- mean(Out1$GD)
+  OSdGD <- sd (Out1$GD)
+  OMeanSNPs <- mean(Out1$SNPs)
+  OSdSNPs <- sd(Out1$SNPs)
+  LogOut1 <- data.frame(OMeanGD,OSdGD,OMeanSNPs,OSdSNPs)
+  colnames(LogOut1) <- c("Overall mean GDij|k","Standard deviation GDij|k","Overall mean usable loci","Standard deviation usable loci")
+  
+  Geno <- vector(mode="numeric",length=0)
+  MeanGDGeno <- vector(mode="numeric",length=0)
+  MinGDGeno <- vector(mode="numeric",length=0)
+  MaxGDGeno <- vector(mode="numeric",length=0)
+  MeanSNPsGeno <- vector(mode="numeric",length=0)
+  for (i in 1:nrow(GK)) {
+    genoOut <- subset (Out1, Out1$Parent1 == GK$genos[i])
+    Geno <- append(Geno,as.character(GK$genos[i]))
+    MeanGDGeno <- append(MeanGDGeno,mean(genoOut$GD))
+    MinGDGeno <- append(MinGDGeno,min(genoOut$GD))
+    MaxGDGeno <- append(MaxGDGeno,max(genoOut$GD))
+    MeanSNPsGeno <- append(MeanSNPsGeno,mean(genoOut$SNPs))
+  }
+  LogOut2 <- data.frame(Geno,MeanGDGeno,MinGDGeno,MaxGDGeno,MeanSNPsGeno)
+  colnames(LogOut2) <- c("Genotype","Mean GDij|k","Min GDij|k","Max GDij|k","Mean usable loci")
+  blank <- data.frame(" "," "," "," "," "," ")
+  if (files==TRUE) {
+    write.table(LogOut1,"apparent-Triad-Summary.csv",sep=",",col.names=T,row.names=F)
+    write.table(blank,"apparent-Triad-Summary.csv",sep=",",col.names=F,row.names=F,append=T)
+    write.table(blank,"apparent-Triad-Summary.csv",sep=",",col.names=F,row.names=F,append=T)
+    write.table(LogOut2,"apparent-Triad-Summary.csv",sep=",",col.names=T,row.names=F,append=T)
+  } else {
+    print("Summary statistics from the triad analysis:")
+    print("Population-wide:")
+    print(LogOut1,quote=F,row.names=F)
+    print("Individual genotypes:")
+    print(LogOut2,quote=F,row.names=F)
+  }
+
   # Finding the triad GAP and testing its significance. 
   # Calculating p-values for potentially significant triads below the GAP.
   Out1a <- na.omit(Out1[order(Out1$GD),])
@@ -275,14 +312,19 @@ apparent = function (InputFile, MaxIdent = 0.10, alpha = 0.01, nloci = 300, Full
       colnames(Out2) <- c("Parent1","Parent2","Offspring","Cross.Type","SNPs","GD","p.value")
       Out2a <- subset(Out2,Out2$p.value < alpha)
       Out2a <- Out2a[order(Out2a$p.value),]
-      write.table(Out2a,"apparent-Triad-Sig.txt",sep="\t",col.names=T,row.names=F)
+      if (files==TRUE) {
+        write.csv(Out2a,"apparent-Triad-Sig.csv",row.names=F)
+      } else {
+        print ("Significant Triads found:")
+        print(Out2a,quote=F,row.names=F)
+      }
     }
   } else {
     print("The triad analysis GAP was not significant at the declared alpha level. No triads (pair of parents + offspring) were found.")
   }
   
   # Print the Triad analysis plots
-  if (plot == TRUE && nrow(Out1b) > 0) {
+  if (files == TRUE && nrow(Out1b) > 0) {
     SortGD <- as.data.frame(na.omit(sort(GD)))
     colnames(SortGD) <- "GD"
     ThresholdT <- mean(c(SortGD[TIndex + 1,1], SortGD[TIndex,1]))
@@ -395,7 +437,8 @@ apparent = function (InputFile, MaxIdent = 0.10, alpha = 0.01, nloci = 300, Full
         Out3 <- subset(Out3,Out3$DCumPv < alpha)
         Out3 <- Out3[order(Out3$DCumPv),]   
         
-        # Skip all parent-offspring pairs already considered, as well as all offspring successfuly assigned to parental pairs in the Triad analysis.     
+        # Skip all parent-offspring pairs already considered, 
+        # as well as all offspring successfuly assigned to parental pairs in the Triad analysis.     
         Out3a <- data.frame(matrix(ncol=7,nrow=0))
         Out3b <- data.frame(matrix(ncol=5,nrow=0))
         Out3$D1 <- paste(Out3$DPa,Out3$DOf,sep=".")
@@ -411,37 +454,41 @@ apparent = function (InputFile, MaxIdent = 0.10, alpha = 0.01, nloci = 300, Full
             Out3a <- rbind (Out3a,Out3[i,])
           }
         }
-        Out3a <- Out3a[order(Out3a$DOf,Out3a$DCumPv),]  
+        Out3a <- Out3a[order(Out3a$DOf,Out3a$DCumPv),]
         
         for (i in 1:nrow(Out3a)) {
-          Occur <- length(grep(Out3a$DOf[i],Out3a$DOf))     
-          if (Occur == 1) {
-            Out3b <- rbind (Out3b,Out3a[i,c(1:5)])
-            next
-          } else if (Occur > 1) {
-            if (Out3a[i,2] == Out3a[i-1,2]) {
-              next
-            }
-            if ( (Out3a[i+1,5] / Out3a[i,5] ) > 200 ) {
+          if (i == nrow(Out3a)) {
+            break
+          } else {
+            Occur <- length(grep(Out3a$DOf[i],Out3a$DOf))     
+            if (Occur == 1) {
               Out3b <- rbind (Out3b,Out3a[i,c(1:5)])
-            } else {
-              next
+            } else if (Occur > 1) {
+              if ( (Out3a[i+1,2] != Out3a[i,2]) && ((Out3a[i+1,5] / Out3a[i,5]) >= 200) ) {
+                Out3b <- rbind (Out3b,Out3a[i,c(1:5)])
+                # } else if ( (Out3a[i+1,2] != Out3a[i,2]) && ((Out3a[i+1,5] / Out3a[i,5]) < 200) ) {
+                #   Out3b <- rbind (Out3b,Out3a[i,c(1:5)])
+              }
             }
           }
         }
         Out3b <- Out3b[,1:5]
-        Out3b <- Out3b[order(Out3b$DCumPv),]
-        colnames(Out3b) <- c("Parent","Offspring","GDM p-value","GDCV p-value","Cumulative p-value")
-        
         # Printing Dyad results
         if (nrow(Out3b) <= 0) {
           stop ("At the declared alpha level, the Dyad analysis was unable to find any signficant parent-offspring associations.")
         } else {
-          write.table(Out3b,"apparent-Dyad-Sig.txt",sep="\t",col.names=T,row.names=F)
+          Out3b <- Out3b[order(Out3b$DCumPv),]
+          colnames(Out3b) <- c("Parent","Offspring","GDM p-value","GDCV p-value","Cumulative p-value")
+          if (files == TRUE) {
+            write.csv(Out3b,"apparent-Dyad-Sig.csv",row.names=F)
+          } else {
+            print ("Significant parent-offspring dyads found:")
+            print(Out3b,quote=F,row.names=F)
+          }
         }
         
         # Plotting the Dyad results
-        if ( plot==TRUE && nrow(Out3b > 0) ) {
+        if ( files==TRUE && nrow(Out3b > 0) ) {
           pdf("apparent-Dyad-Plot.pdf",width=7,height=4)
           for (i in 1:nrow(Out3b)) {
             par(mfrow=c(2,1))
@@ -498,4 +545,4 @@ apparent = function (InputFile, MaxIdent = 0.10, alpha = 0.01, nloci = 300, Full
   }
   print("Done.")
   proc.time() - ptm
-}  
+} 

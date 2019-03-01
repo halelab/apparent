@@ -21,7 +21,7 @@ setwd("/path/to/work/dir")
 # Load the apparent_TestData
 InputFile <- read.table(file="apparent_TestData.txt",sep="\t",h=F)
 # Run apparent
-apparent (InputFile, MaxIdent = 0.1, alpha = 0.01, nloci = 100, FullList = TRUE, self = TRUE, plot = TRUE, Dyad = FALSE)
+apparent (InputFile, MaxIdent = 0.1, alpha = 0.01, nloci = 300, self = TRUE, files = FALSE, Dyad = FALSE)
 ```
 
 ### Arguments
@@ -45,9 +45,8 @@ The keys values allowed in the second column are:
 - **MaxIdent**: Sets the maximum triad GDij|k to be considered for outlier significance testing. This parameter directly impacts computation time. By default, MaxIdent is set to 0.1.  
 - **alpha**: The alpha level for all significance testing (triad and dyad analyses).  
 - **nloci**: The minimum acceptable number loci to be used when computing the pairwise GDij|k. The default value of 100 is suggested, based on previous investigations. All triads for which the number of usable SNPs falls below nloci will be excluded from the analysis.  
-- **FullList**: Logical value for creating an output file containing all pairwise comparisons from the triad analysis. The default value is TRUE.  
 - **self**: Logical value for instructing 'apparent' whether or not to consider self-crossing (parent i = parent j). The default value is TRUE.  
-- **plot**: Logical value for plotting the results of both the triad and dyad analyses. The default value is TRUE.   
+- **files**: Logical value for creating the output files (apparent-Triad-All.csv, apparent-Triad-Summary.csv, apparent-Triad-Sig.csv and apparent-Dyad-Sig.csv) and plotting the results of both the triad and dyad analyses (apparent-Triad-Plot.png and apparent-Dyad-Plot.pdf). The default value is FALSE, meaning the results will be printed, instead saved.   
 - **Dyad**: Logical value for instructing 'apparent' to perform a dyad analysis, following the triad analysis. The default value is FALSE.  
 
 ### Outputs

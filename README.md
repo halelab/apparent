@@ -8,6 +8,8 @@ For any offspring not successfully assigned to a pair of parents, perhaps due to
 1.  Always include at least one known (true) triad in the analysis, as a reference/control.
 2.  After running the triad analysis, inspect the summary file "apparent-Triad-Summary.txt" to see if any individuals exhibit unusually low mean GDij|k values or mean number of loci usable for analysis.  If such individuals exist, remove them and re-run the analysis.
 
+**Pedigree to be tested**: The pedigree information for the 12 progenies (four families of three full-sibs each) from controlled crosses used to assess the performance of apparent can be found [here](https://github.com/halelab/apparent/blob/master/Families.xlsx).  
+
 ### Usage
 - Download the [apparent_TestData.txt](https://github.com/halelab/apparent/blob/master/apparent_TestData.txt) for your R working directory.  
 - Download the [apparent R script](https://github.com/halelab/apparent/blob/master/apparent.R) and load it into R.
@@ -16,12 +18,13 @@ In R
 # Install/Load the required "outliers" R package
 install.packages("outliers")
 library(outliers)
-# Set the path for your working directory
-setwd("/path/to/work/dir")
-# Load the apparent_TestData
+# Load the input file
 InputFile <- read.table(file="apparent_TestData.txt",sep="\t",h=F)
 # Run apparent
-apparent(InputFile, MaxIdent=0.10, alpha=0.01, nloci=300, self=TRUE, plot=TRUE, files=TRUE, Dyad=FALSE)
+apparentOUT <- apparent(InputFile, MaxIdent=0.10, alpha=0.01, nloci=300, self=TRUE, plot=TRUE, Dyad=FALSE)
+# Check the Triad analysis output
+apparentOUT$Triad_all
+apparentOUT$Triad_sig
 ```
 
 ### Arguments
@@ -46,19 +49,18 @@ The keys values allowed in the second column are:
 - **alpha**: The alpha level for all significance testing (triad and dyad analyses).  
 - **nloci**: The minimum acceptable number loci to be used when computing the pairwise GDij|k. The default value of 100 is suggested, based on previous investigations. All triads for which the number of usable SNPs falls below nloci will be excluded from the analysis.  
 - **self**: Logical value for instructing 'apparent' whether or not to consider self-crossing (parent i = parent j). The default value is TRUE.  
-- **plot**: Logical value for create the plots of both Triad and Dyad analysis. By default, 'apparent' creates only the Triad analysis plot. The default value is TRUE, meaning 'apparent' creates only the Triad analysis plot. The Dyad analysis plot can't be printed, only saved (it is a pdf file with multiple plots for each significant offspring). To save Dyad analysis plot, make sure plot, files and Dyad flags are TRUE.  
-- **files**: Logical value for saving the tables and graphics output files from both Triad and Dyad analysis. The default value is FALSE, meaning the results will be stored at local variables, instead saved. The Triad analysis files that can be saved are: apparent-Triad-All.csv, apparent-Triad-Sig.csv, apparent-Triad-Summary.csv and apparent-Triad-Plot.png. The Dyad analysis result table (apparent-Dyad-Sig.csv) will be saved only if both files and Dyad flags are TRUE. To save Dyad analysis plot, make sure plot, files and Dyad flags are TRUE.   
+- **plot**: Logical value for create the plots of both Triad and Dyad analysis. By default, 'apparent' creates only the Triad analysis plot. The default value is TRUE, meaning 'apparent' creates only the Triad analysis plot. The Dyad analysis plot can't be printed, only saved (it is a pdf file with multiple plots for each significant offspring). To save Dyad analysis plot, make sure plot, files and Dyad flags are TRUE.    
 - **Dyad**: Logical value for instructing 'apparent' to perform a dyad analysis, following the triad analysis. The default value is FALSE.  
 
 ### Outputs
-The pedigree information for the 12 progenies (four families of three full-sibs each) from controlled crosses used to assess the performance of apparent can be found [here](https://github.com/halelab/apparent/blob/master/Families.xlsx).  
+Returns a list object with multiple results; i.e., four outputs from the mandatory Triad analysis and the result of the Dyad analysis, if the analysis was done. The list of results are:  
+- **Triad_all**: contains the full table of results from the triad analysis, including the cross type (self or out-cross), the number of usable SNPs, and the GDij|POk, of all tested triads.  
+- **Triad_sig**: reports only those triads found to be significant.  
+- **Triad_summary_pop**: useful summary statistics from the Triad analysis. For the population as a whole: Overall mean GDij|POk and its standard deviation, as well as overall mean number of usable SNPs and its standard deviation.  
+- **Triad_summary_geno**: useful summary statistics from the Triad analysis. For each individual genotype in the analysis: Mean GDij|POk, GDij|POk range, and mean usable number of SNPs for all comparisons involving that genotype. Genotypes exhibiting a mean GDij|POk or number of usable SNPs less than 2 SD's below the population means are considered outliers.  
+- **Dyad_Sig**: reports only those parent-offspring dyads found to be significant. Only if the Dyad analysis was done.  
 
-- **Triad_All** and [**apparent-Triad-All.csv**](https://github.com/halelab/apparent/blob/master/outputs/apparent-Triad-All.csv) contains the full table of results from the triad analysis, including the cross type (self or out-cross), the number of usable SNPs, and the GDij|k, of all tested triads.  
-- **Triad_Log1, Triad_Log2** and [**apparent-Triad-Summary.csv**](https://github.com/halelab/apparent/blob/master/outputs/apparent-Triad-Summary.csv) reports useful summary statistics from the triad analysis.  For the population as a whole: Overall mean GDij|k and its standard deviation, as well as overall mean number of usable SNPs and its standard deviation. For each individual genotype in the analysis: Mean GDij|k, GDij|k range, and mean usable number of SNPs for all comparisons involving that genotype.  Genotypes exhibiting a mean GDij|k or number of usable SNPs less than 2 SD's below the population means are flagged with an asterisk.   
-- **Triad_Sig** and [**apparent-Triad-Sig.csv**](https://github.com/halelab/apparent/blob/master/outputs/apparent-Triad-Sig.csv) reports only those triads found to be significant.  
-- [**apparent-Triad-Plot.png**](https://github.com/halelab/apparent/blob/master/outputs/apparent-Triad-Plot.png) is a plot of the distribution of GDij|k values, annotated with the gap-based threshold that separates true triads from spurious associations.  The plot is useful in interpretating the results of the triad analysis, the full details of which are found in **apparent-Triad-All.csv** and **apparent-Triad-Sig.csv**.  
-- **Dyad_Sig** and [**apparent-Dyad-Sig.csv**](https://github.com/halelab/apparent/blob/master/outputs/apparent-Dyad-Sig.csv) reports only those parent-offspring dyads found to be significant.  
-- [**apparent-Dyad-Plot.pdf**](https://github.com/halelab/apparent/blob/master/outputs/apparent-Dyad-Plot.pdf) is a two-paneled figure showing the distributions of GDM and GDCV values upon which the dyad analysis is based. These plots are useful in interpretating the results of the dyad analysis, the full details of which are found in **apparent-Dyad-Sig.csv**.
+Along with the data frame outputs, if plot is TRUE, apparent will create both the Triad and Dyad analysis plots. The Triad analysis plot has the distribution of GDij|POk values, annotated with the gap-based threshold that separates true triads from spurious associations.  The plot is useful in interpretating the results of the triad analysis , the full details of which are found in Triad_all Triad_sig.txt. The Dyad analysis plot (only if plot=TRUE and Dyad=TRUE) is a two-paneled figure showing the distributions of GDM and GDCV values upon which the dyad analysis is based.  These plots are useful in interpretating the results of the dyad analysis, the full details of which are found in Dyad_sig.
 
 ### Reference
 Gower JC. A general coefficient of similarity and some of its properties. Biometrics. 1971;27:857-871.  

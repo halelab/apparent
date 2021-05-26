@@ -437,6 +437,8 @@ apparent = function (InputFile, MaxIdent=0.10, alpha=0.01, nloci=300, self=TRUE,
           } else {
             Out3a <- rbind (Out3a,Out3[j,])
           }
+        }
+        else {
           Out3a <- rbind (Out3a,Out3[i,])
         }
       }
